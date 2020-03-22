@@ -1,0 +1,55 @@
+/* Query 1 */ 
+Top 5 countries in sales
+
+SELECT BillingCountry AS Country, SUM(IL.Quantity*IL.UnitPrice) AS Total
+FROM Invoice I
+JOIN InvoiceLine IL
+WHERE I.InvoiceId = IL.InvoiceId
+GROUP BY Country
+ORDER BY Total DESC
+LIMIT 5
+
+
+/* Query 2 */
+Most popular genres in Brazil
+
+SELECT I.BillingCountry AS Country, G.Name AS Genre, COUNT(*) AS Total
+FROM Invoice AS I
+JOIN InvoiceLine AS IL
+  ON I.InvoiceId = IL.InvoiceId
+JOIN Track AS T
+  ON IL.TrackId = T.TrackId
+JOIN Genre AS G
+  ON T.GenreId = G.GenreId
+WHERE Country = "Brazil"
+GROUP BY Genre
+ORDER BY Total DESC
+
+
+/* Query 3 */
+Top 5 selling tracks
+
+SELECT T.Name AS Track, SUM(IL.Quantity*IL.UnitPrice) AS "Total Sales"
+FROM Track AS T
+JOIN InvoiceLine AS IL  
+  ON T.TrackId = IL.TrackId
+GROUP BY Track
+ORDER BY "Total Sales" DESC
+LIMIT 5
+
+
+/* Query 4 */ 
+Top 10 selling albums in Europe
+
+SELECT Al.Title AS Album, I.BillingCountry AS Country, SUM(IL.Quantity*IL.UnitPrice) AS "Total Sales" 
+FROM Album AS Al
+JOIN Track AS T
+  ON Al.AlbumId = T.AlbumId
+JOIN InvoiceLine AS IL
+  ON T.TrackId = IL.TrackId
+JOIN Invoice AS I
+  ON IL.InvoiceId = I.InvoiceId
+WHERE Country != "USA" AND Country != "Canada" AND Country != "Brazil" AND Country != "India" AND Country != "Chile" AND Country != "Australia" 
+GROUP BY Al.Title
+ORDER BY "Total Sales" DESC
+LIMIT 10
